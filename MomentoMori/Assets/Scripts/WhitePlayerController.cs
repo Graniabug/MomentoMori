@@ -362,6 +362,7 @@ public class WhitePlayerController : MonoBehaviour
         if(collision.gameObject.GetComponent<Life>())
         {
              couldBeKilled = collision.gameObject;
+            //killUI.SetActive(true);
         }
     }
 
@@ -375,6 +376,7 @@ public class WhitePlayerController : MonoBehaviour
         if (other.gameObject.GetComponent<Life>())
         {
             couldBeKilled = this.gameObject;
+            //killUI.SetActive(false);
         }
     }
 
