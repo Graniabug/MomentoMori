@@ -59,9 +59,9 @@ public class MainMenu : MonoBehaviour
 
 
         leftShift = backGround.transform.position;
-        leftShift.x = 300;
+        leftShift.x = Screen.width / 4;
         rightShift = backGround.transform.position;
-        rightShift.x = 1000;
+        rightShift.x = leftShift.x*3;
     }
 
     private void Update()
