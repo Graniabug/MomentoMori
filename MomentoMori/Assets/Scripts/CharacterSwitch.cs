@@ -11,7 +11,7 @@ using UnityEngine;
 
 public class CharacterSwitch : MonoBehaviour
 {
-    public GameObject[] characters = new GameObject[1];
+    public GameObject[] characters = new GameObject[2];
 
     private float lastSwitched;
 
@@ -21,7 +21,7 @@ public class CharacterSwitch : MonoBehaviour
         lastSwitched = Time.time;
 
         characters[0].GetComponent<WhitePlayerController>().isHost = true;
-        //characters[2].GetComponent<BlackPlayerController>().isHost = false;
+        characters[1].GetComponent<BlackPlayerController>().isHost = false;
     }
 
     // Update is called once per frame
@@ -32,16 +32,31 @@ public class CharacterSwitch : MonoBehaviour
             if (characters[0].GetComponent<WhitePlayerController>().isHost)
             {
                 characters[0].GetComponent<WhitePlayerController>().isHost = false;
-                //characters[1].GetComponent<BlackPlayerController>().isHost = true;
+                characters[1].GetComponent<BlackPlayerController>().isHost = true;
             }
-            else
-            {
-                //characters[1].GetComponent<BlackPlayerController>().isHost = false;
+
+            if(characters[1].GetComponent<BlackPlayerController>().isHost)
+            { 
+                characters[1].GetComponent<BlackPlayerController>().isHost = false;
                 characters[0].GetComponent<WhitePlayerController>().isHost = true;
             }
 
             lastSwitched = Time.time;
             lastSwitched += 1;
+        }
+
+        //if white dies, make black the host
+        if (characters[0].GetComponent<WhitePlayerController>().isHost && !characters[0].GetComponent<Life>().alive)
+        {
+            characters[1].GetComponent<BlackPlayerController>().isHost = true;
+            characters[0].GetComponent<WhitePlayerController>().isHost = false;
+        }
+
+        //if black dies, make white the host
+        if (characters[1].GetComponent<BlackPlayerController>().isHost && !characters[1].GetComponent<Life>().alive)
+        {
+            characters[0].GetComponent<WhitePlayerController>().isHost = true;
+            characters[1].GetComponent<BlackPlayerController>().isHost = false;
         }
     }
 }
