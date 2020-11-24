@@ -20,8 +20,8 @@ public class CharacterSwitch : MonoBehaviour
     {
         lastSwitched = Time.time;
 
-        characters[0].GetComponent<WhitePlayerController>().isHost = true;
-        characters[1].GetComponent<BlackPlayerController>().isHost = false;
+        characters[0].GetComponent<WhitePlayerController>().isHost = false;
+        characters[1].GetComponent<BlackPlayerController>().isHost = true;
     }
 
     // Update is called once per frame
@@ -29,14 +29,17 @@ public class CharacterSwitch : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.V) && Time.time > lastSwitched)
         {
+            print("switching");
             if (characters[0].GetComponent<WhitePlayerController>().isHost)
             {
+                print("black should be host");
                 characters[0].GetComponent<WhitePlayerController>().isHost = false;
                 characters[1].GetComponent<BlackPlayerController>().isHost = true;
             }
 
             if(characters[1].GetComponent<BlackPlayerController>().isHost)
-            { 
+            {
+                print("white should be host");
                 characters[1].GetComponent<BlackPlayerController>().isHost = false;
                 characters[0].GetComponent<WhitePlayerController>().isHost = true;
             }
@@ -46,7 +49,7 @@ public class CharacterSwitch : MonoBehaviour
         }
 
         //if white dies, make black the host
-        if (characters[0].GetComponent<WhitePlayerController>().isHost && !characters[0].GetComponent<Life>().alive)
+        /*if (characters[0].GetComponent<WhitePlayerController>().isHost && !characters[0].GetComponent<Life>().alive)
         {
             characters[1].GetComponent<BlackPlayerController>().isHost = true;
             characters[0].GetComponent<WhitePlayerController>().isHost = false;
@@ -57,6 +60,6 @@ public class CharacterSwitch : MonoBehaviour
         {
             characters[0].GetComponent<WhitePlayerController>().isHost = true;
             characters[1].GetComponent<BlackPlayerController>().isHost = false;
-        }
+        }*/
     }
 }
