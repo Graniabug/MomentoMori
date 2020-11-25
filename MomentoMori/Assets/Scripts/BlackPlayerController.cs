@@ -222,7 +222,7 @@ public class BlackPlayerController : MonoBehaviour
             && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D)
             && isJumping != true)
         {
-            // Sets the sprite for character to stand
+            //Sets the sprite for character to stand
             //character.GetComponent<SpriteRenderer>().sprite = stand;
             isWalking = false;
         }
