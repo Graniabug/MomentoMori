@@ -14,10 +14,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WhitePlayerController : MonoBehaviour
+public class BlackPlayerController : MonoBehaviour
 {
     public GameObject character;
-    public GameObject flashlight;
 
     /*
     public Sprite stand;
@@ -41,40 +40,41 @@ public class WhitePlayerController : MonoBehaviour
     public bool isJumping = false;
     public float jumpHeight = 500;
 
-    public bool isInLightCollider = false;  //true of the player is currently within the collider for a light: does not mean they are currently in the light
+    public bool isInLightCollider = false;  //true if the player is currently within the collider for a light: does not mean they are currently in the light
+    public bool isInGreyLight = false;
+    private bool greyLight2 = false;
     public bool inTheLight = false;  //true if the player is currently in the light, false if not
     Transform currentLight;  //reference to the light that is currently a threat to the player
     public Text dialogue;  //Reference to the dialogue box above the player's head
-    Vector3 lastInDark;  //Saves the last safe location before the player was in the light
+    Vector3 lastInLight;  //Saves the last safe location before the player was in the light
 
     public bool isHost;
-    public GameObject black;
+    public GameObject white;
 
     bool isAlive;
-    GameObject couldBeKilled;
+    GameObject couldBeRevived;
 
     // Start is called before the first frame update
     void Start()
     {
         delay = delayReset;
 
-        //initialize the spawn position as the last place the character was in the dark
-        lastInDark = transform.position;
+        //initialize the spawn position as the last place the character was in the light
+        lastInLight = transform.position;
 
-        //initialize White dialogue to empty
+        //initialize black dialogue to empty
         dialogue.text = "";
 
         isAlive = GetComponent<Life>().alive;
 
-        couldBeKilled = this.gameObject;
+        couldBeRevived = this.gameObject;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //get if White is alive
+        //get if Black is alive
         isAlive = GetComponent<Life>().alive;
-
         //get input and move the player character
         if (isAlive)
         {
@@ -82,38 +82,37 @@ public class WhitePlayerController : MonoBehaviour
             //{
             if (isHost)
             {
-                WhiteMoveSingleplayer();
+                BlackMoveSingleplayer();
             }
-            else
+            else if (isInGreyLight && white.GetComponent<WhitePlayerController>().isInGreyLight)
             {
-                WhiteFollowBlack();
+                BlackFollowWhite();
             }
             //}
             //else
             //{
-            //WhiteMoveMultiplayer();
+            //BlackMoveMultiplayer();
             //}
         }
 
         //if the player character is in the trigger for a light, check if they are in direct line-of-sight with the light
-        if (isInLightCollider == true)
+        if (isInLightCollider)
         {
             CheckForLight();
         }
 
-        //If the player is in the light, move them back to outside of the collider
-        if (inTheLight)
+        //If the player is not in the light, move them back to outside of the collider
+        if (!inTheLight && !isInGreyLight)
         {
-            //TODO: Check if lastInDark or other PC are closer, go to the closer one
-            //If you go to the other PC, match their position + an amount in tranform the opposite direction from the light
-            transform.position = Vector3.Lerp(transform.position, lastInDark, (speed * 2));
+            StartCoroutine(MessageActivation("I don't like the dark..."));
+            transform.position = Vector3.Lerp(transform.position, lastInLight, (speed * 2));
             isWalking = true;
         }
 
-        /*if(Input.GetKeyDown(KeyCode.E))
+/*        if(Input.GetKeyDown(KeyCode.E))
         {
-            couldBeKilled.GetComponent<Life>().alive = false;
-            print(couldBeKilled + " is dead");
+            couldBeRevived.GetComponent<Life>().alive = true;
+            print(couldBeRevived + " is alive");
         }*/
     }
 
@@ -167,7 +166,7 @@ public class WhitePlayerController : MonoBehaviour
         }
     }
 
-    void WhiteMoveSingleplayer()
+    void BlackMoveSingleplayer()
     {
         delay -= 1 * Time.deltaTime;
 
@@ -205,7 +204,6 @@ public class WhitePlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
-            flashlight.transform.position.y.Equals(0);
             isWalking = true;
             direction = 0;
             FaceDirection();
@@ -214,7 +212,6 @@ public class WhitePlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.S))
         {
             transform.Translate(Vector3.back * speed * Time.deltaTime);
-            flashlight.transform.position.y.Equals(180);
             isWalking = true;
             direction = 0;
             FaceDirection();
@@ -224,7 +221,7 @@ public class WhitePlayerController : MonoBehaviour
             && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D)
             && isJumping != true)
         {
-            // Sets the sprite for character to stand
+            //Sets the sprite for character to stand
             //character.GetComponent<SpriteRenderer>().sprite = stand;
             isWalking = false;
         }
@@ -240,12 +237,12 @@ public class WhitePlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            couldBeKilled.GetComponent<Life>().alive = false;
-            print(couldBeKilled + " is dead");
+            couldBeRevived.GetComponent<Life>().alive = true;
+            print(couldBeRevived + " is alive");
         }
     }
 
-    void WhiteMoveMultiplayer()
+    void BlackMoveMultiplayer()
     {
         delay -= 1 * Time.deltaTime;
 
@@ -264,7 +261,7 @@ public class WhitePlayerController : MonoBehaviour
             //character.GetComponent<SpriteRenderer>().sprite = jump;
         }
 
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.D))
         {
             transform.Translate(Vector3.right * speed * Time.deltaTime);
             isWalking = true;
@@ -272,7 +269,7 @@ public class WhitePlayerController : MonoBehaviour
             FaceDirection();
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.A))
         {
             transform.Translate(Vector3.left * speed * Time.deltaTime);
             isWalking = true;
@@ -280,7 +277,7 @@ public class WhitePlayerController : MonoBehaviour
             FaceDirection();
         }
 
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W))
         {
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
             isWalking = true;
@@ -288,7 +285,7 @@ public class WhitePlayerController : MonoBehaviour
             FaceDirection();
         }
 
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S))
         {
             transform.Translate(Vector3.back * speed * Time.deltaTime);
             isWalking = true;
@@ -296,8 +293,8 @@ public class WhitePlayerController : MonoBehaviour
             FaceDirection();
         }
 
-        if (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow)
-            && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow)
+        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.A)
+            && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D)
             && isJumping != true)
         {
             // Sets the sprite for character to stand
@@ -305,7 +302,7 @@ public class WhitePlayerController : MonoBehaviour
             isWalking = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.RightShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             if (!isJumping)
             {
@@ -315,15 +312,12 @@ public class WhitePlayerController : MonoBehaviour
         }
     }
 
-    void WhiteFollowBlack()
+    void BlackFollowWhite()
     {
         float distanceWanted = 3.0f;
 
-        if (!inTheLight)
-        {
-            Vector3 diff = transform.position - black.transform.position;
-            transform.position = black.transform.position + diff.normalized * distanceWanted;
-        }
+        Vector3 diff = transform.position - white.transform.position;
+        transform.position = white.transform.position + diff.normalized * distanceWanted;
     }
 
     void CheckForLight()
@@ -343,7 +337,7 @@ public class WhitePlayerController : MonoBehaviour
         {
             Debug.DrawLine(transform.position, currentLight.transform.position, Color.red, 100f);
             inTheLight = true;
-            StartCoroutine(MessageActivation("I'd prefer to stay in the dark, thanks."));
+            lastInLight = transform.position;
             print("In the light");
         }
     }
@@ -362,16 +356,20 @@ public class WhitePlayerController : MonoBehaviour
         if (collision.gameObject.layer == 8)
         {
             isInLightCollider = true;
-            lastInDark = transform.position;
             currentLight = collision.gameObject.transform.parent;
             print("In the light collider");
         }
 
         //if inside an enemy of player trigger that isn't your own
-        if(collision.gameObject.GetComponent<Life>() && collision.gameObject.GetComponent<Life>().alive)
+        if(collision.gameObject.GetComponent<Life>() && !collision.gameObject.GetComponent<Life>().alive)
         {
-             couldBeKilled = collision.gameObject;
-            //killUI.SetActive(true);
+             couldBeRevived = collision.gameObject;
+            //reviveUI.SetActive(true);
+        }
+
+        if (collision.gameObject.tag == "GreyLight")
+        {
+            isInGreyLight = true;
         }
     }
 
@@ -382,10 +380,15 @@ public class WhitePlayerController : MonoBehaviour
             isInLightCollider = false;
         }
 
-        if (other.gameObject.GetComponent<Life>() && other.gameObject.GetComponent<Life>().alive)
+        if (other.gameObject.GetComponent<Life>() && !other.gameObject.GetComponent<Life>().alive)
         {
-            couldBeKilled = this.gameObject;
-            //killUI.SetActive(false);
+            couldBeRevived = this.gameObject;
+            //reviveUI.SetActive(false);
+        }
+
+        if (other.gameObject.tag == "GreyLight")
+        {
+            isInGreyLight = false;
         }
     }
 

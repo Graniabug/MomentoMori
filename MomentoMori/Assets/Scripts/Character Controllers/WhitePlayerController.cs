@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BlackPlayerController : MonoBehaviour
+public class WhitePlayerController : MonoBehaviour
 {
     public GameObject character;
 
@@ -40,38 +40,39 @@ public class BlackPlayerController : MonoBehaviour
     public bool isJumping = false;
     public float jumpHeight = 500;
 
-    public bool isInLightCollider = false;  //true if the player is currently within the collider for a light: does not mean they are currently in the light
+    public bool isInLightCollider = false;  //true of the player is currently within the collider for a light: does not mean they are currently in the light
+    public bool isInGreyLight = false;
     public bool inTheLight = false;  //true if the player is currently in the light, false if not
     Transform currentLight;  //reference to the light that is currently a threat to the player
     public Text dialogue;  //Reference to the dialogue box above the player's head
-    Vector3 lastInLight;  //Saves the last safe location before the player was in the light
+    Vector3 lastInDark;  //Saves the last safe location before the player was in the light
 
     public bool isHost;
-    public GameObject white;
+    public GameObject black;
 
     bool isAlive;
-    GameObject couldBeRevived;
+    GameObject couldBeKilled;
 
     // Start is called before the first frame update
     void Start()
     {
         delay = delayReset;
 
-        //initialize the spawn position as the last place the character was in the light
-        lastInLight = transform.position;
+        //initialize the spawn position as the last place the character was in the dark
+        lastInDark = transform.position;
 
-        //initialize black dialogue to empty
+        //initialize White dialogue to empty
         dialogue.text = "";
 
         isAlive = GetComponent<Life>().alive;
 
-        couldBeRevived = this.gameObject;
+        couldBeKilled = this.gameObject;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //get if Black is alive
+        //get if White is alive
         isAlive = GetComponent<Life>().alive;
 
         //get input and move the player character
@@ -81,17 +82,16 @@ public class BlackPlayerController : MonoBehaviour
             //{
             if (isHost)
             {
-                BlackMoveSingleplayer();
+                WhiteMoveSingleplayer();
             }
-            else
+            else if (isInGreyLight)
             {
-                print("black following");
-                BlackFollowWhite();
+                WhiteFollowBlack();
             }
             //}
             //else
             //{
-            //BlackMoveMultiplayer();
+            //WhiteMoveMultiplayer();
             //}
         }
 
@@ -102,18 +102,18 @@ public class BlackPlayerController : MonoBehaviour
         }
 
         //If the player is in the light, move them back to outside of the collider
-        if (!inTheLight)
+        if (inTheLight)
         {
             //TODO: Check if lastInDark or other PC are closer, go to the closer one
             //If you go to the other PC, match their position + an amount in tranform the opposite direction from the light
-            transform.position = Vector3.Lerp(transform.position, lastInLight, (speed * 2));
+            transform.position = Vector3.Lerp(transform.position, lastInDark, (speed * 2));
             isWalking = true;
         }
 
-/*        if(Input.GetKeyDown(KeyCode.E))
+        /*if(Input.GetKeyDown(KeyCode.E))
         {
-            couldBeRevived.GetComponent<Life>().alive = true;
-            print(couldBeRevived + " is alive");
+            couldBeKilled.GetComponent<Life>().alive = false;
+            print(couldBeKilled + " is dead");
         }*/
     }
 
@@ -167,83 +167,7 @@ public class BlackPlayerController : MonoBehaviour
         }
     }
 
-    void BlackMoveSingleplayer()
-    {
-        delay -= 1 * Time.deltaTime;
-
-        if (delay <= 0)
-        {
-            if (isWalking == true && isJumping != true)
-            {
-                Walk();
-            }
-
-            delay = delayReset;
-        }
-
-        if (isJumping == true)
-        {
-            //character.GetComponent<SpriteRenderer>().sprite = jump;
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.Translate(Vector3.right * speed * Time.deltaTime);
-            isWalking = true;
-            direction = 0;
-            FaceDirection();
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Translate(Vector3.left * speed * Time.deltaTime);
-            isWalking = true;
-            direction = 1;
-            FaceDirection();
-        }
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
-            isWalking = true;
-            direction = 0;
-            FaceDirection();
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.Translate(Vector3.back * speed * Time.deltaTime);
-            isWalking = true;
-            direction = 0;
-            FaceDirection();
-        }
-
-        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.A)
-            && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D)
-            && isJumping != true)
-        {
-            //Sets the sprite for character to stand
-            //character.GetComponent<SpriteRenderer>().sprite = stand;
-            isWalking = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (!isJumping)
-            {
-                GetComponent<Rigidbody>().AddForce(Vector3.up * jumpHeight);
-                isJumping = true;
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            couldBeRevived.GetComponent<Life>().alive = true;
-            print(couldBeRevived + " is alive");
-        }
-    }
-
-    void BlackMoveMultiplayer()
+    void WhiteMoveSingleplayer()
     {
         delay -= 1 * Time.deltaTime;
 
@@ -303,7 +227,83 @@ public class BlackPlayerController : MonoBehaviour
             isWalking = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!isJumping)
+            {
+                GetComponent<Rigidbody>().AddForce(Vector3.up * jumpHeight);
+                isJumping = true;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            couldBeKilled.GetComponent<Life>().alive = false;
+            print(couldBeKilled + " is dead");
+        }
+    }
+
+    void WhiteMoveMultiplayer()
+    {
+        delay -= 1 * Time.deltaTime;
+
+        if (delay <= 0)
+        {
+            if (isWalking == true && isJumping != true)
+            {
+                Walk();
+            }
+
+            delay = delayReset;
+        }
+
+        if (isJumping == true)
+        {
+            //character.GetComponent<SpriteRenderer>().sprite = jump;
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            transform.Translate(Vector3.right * speed * Time.deltaTime);
+            isWalking = true;
+            direction = 0;
+            FaceDirection();
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            transform.Translate(Vector3.left * speed * Time.deltaTime);
+            isWalking = true;
+            direction = 1;
+            FaceDirection();
+        }
+
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            transform.Translate(Vector3.forward * speed * Time.deltaTime);
+            isWalking = true;
+            direction = 0;
+            FaceDirection();
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            transform.Translate(Vector3.back * speed * Time.deltaTime);
+            isWalking = true;
+            direction = 0;
+            FaceDirection();
+        }
+
+        if (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow)
+            && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow)
+            && isJumping != true)
+        {
+            // Sets the sprite for character to stand
+            //character.GetComponent<SpriteRenderer>().sprite = stand;
+            isWalking = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightShift))
         {
             if (!isJumping)
             {
@@ -313,14 +313,14 @@ public class BlackPlayerController : MonoBehaviour
         }
     }
 
-    void BlackFollowWhite()
+    void WhiteFollowBlack()
     {
         float distanceWanted = 3.0f;
 
-        if (inTheLight)
+        if (!inTheLight)
         {
-            Vector3 diff = transform.position - white.transform.position;
-            transform.position = white.transform.position + diff.normalized * distanceWanted;
+            Vector3 diff = transform.position - black.transform.position;
+            transform.position = black.transform.position + diff.normalized * distanceWanted;
         }
     }
 
@@ -335,14 +335,13 @@ public class BlackPlayerController : MonoBehaviour
             //there's something between the player and the light
             Debug.DrawLine(transform.position, currentLight.transform.position, Color.yellow, 100f);
             inTheLight = false;
-            StartCoroutine(MessageActivation("I don't like the dark..."));
             print("not in light");
         }
         else
         {
             Debug.DrawLine(transform.position, currentLight.transform.position, Color.red, 100f);
             inTheLight = true;
-            lastInLight = transform.position;
+            StartCoroutine(MessageActivation("I'd prefer to stay in the dark, thanks."));
             print("In the light");
         }
     }
@@ -361,15 +360,21 @@ public class BlackPlayerController : MonoBehaviour
         if (collision.gameObject.layer == 8)
         {
             isInLightCollider = true;
+            lastInDark = transform.position;
             currentLight = collision.gameObject.transform.parent;
             print("In the light collider");
         }
 
         //if inside an enemy of player trigger that isn't your own
-        if(collision.gameObject.GetComponent<Life>() && !collision.gameObject.GetComponent<Life>().alive)
+        if(collision.gameObject.GetComponent<Life>() && collision.gameObject.GetComponent<Life>().alive)
         {
-             couldBeRevived = collision.gameObject;
-            //reviveUI.SetActive(true);
+             couldBeKilled = collision.gameObject;
+            //killUI.SetActive(true);
+        }
+
+        if (collision.gameObject.tag == "GreyLight")
+        {
+            isInGreyLight = true;
         }
     }
 
@@ -380,10 +385,15 @@ public class BlackPlayerController : MonoBehaviour
             isInLightCollider = false;
         }
 
-        if (other.gameObject.GetComponent<Life>() && !other.gameObject.GetComponent<Life>().alive)
+        if (other.gameObject.GetComponent<Life>() && other.gameObject.GetComponent<Life>().alive)
         {
-            couldBeRevived = this.gameObject;
-            //reviveUI.SetActive(false);
+            couldBeKilled = this.gameObject;
+            //killUI.SetActive(false);
+        }
+
+        if (other.gameObject.tag == "GreyLight")
+        {
+            isInGreyLight = false;
         }
     }
 

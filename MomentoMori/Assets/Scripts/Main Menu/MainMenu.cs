@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -15,6 +17,7 @@ public class MainMenu : MonoBehaviour
     public GameObject multiplayerMenu;
     public GameObject optionsMenu;
     public GameObject quitMenu;
+    public Image fadeImage;
 
     Vector3 leftShift;
     Vector3 rightShift;
@@ -26,6 +29,7 @@ public class MainMenu : MonoBehaviour
     bool continuePressed = false;
     bool newGamePressed = false;
     bool resetBGPosition = false;
+    bool fadeOut = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +44,7 @@ public class MainMenu : MonoBehaviour
         multiplayerMenu.SetActive(false);
         optionsMenu.SetActive(false);
         quitMenu.SetActive(false);
+        fadeImage.gameObject.SetActive(false);
 
         //show the easter egg menu art 1/50th of the time
         //otherwise, show the default art
@@ -97,6 +102,18 @@ public class MainMenu : MonoBehaviour
             {
                 print("lerp done");
                 resetBGPosition = false;
+            }
+        }
+
+        if (fadeOut)
+        {
+            Color tempColor = fadeImage.color;
+            tempColor.a = Mathf.Lerp(tempColor.a, 1.0f, 0.01f);
+            fadeImage.color = tempColor;
+            print("opacity is: " + fadeImage.color.a);
+            if (fadeImage.color.a.ToString("0.00") == "1.00")
+            {
+                SceneManager.LoadScene("Area1");
             }
         }
     }
@@ -171,6 +188,7 @@ public class MainMenu : MonoBehaviour
 
     public void Play()
     {
-
+        fadeImage.gameObject.SetActive(true);
+        fadeOut = true;
     }
 }
