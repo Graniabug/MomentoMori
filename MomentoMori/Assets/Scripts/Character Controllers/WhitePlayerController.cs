@@ -6,7 +6,7 @@
  * Credits:
  *     2D movement code referenced from code by Hope Moore
  *     Concept for light detection inspired by message from user nickavv on Unity Forum
- * Attached to: "Annus" gameobject in SampleScene scene
+ * Attached to: "Annus" gameobject in all gameplay levels and SampleScene scene
  **********************************************************************************************************/
 
 using System.Collections;
@@ -17,6 +17,8 @@ using UnityEngine.UI;
 public class WhitePlayerController : MonoBehaviour
 {
     public GameObject character;
+
+    private SaveFile currentSaveFile;
 
     /*
     public Sprite stand;
@@ -41,14 +43,14 @@ public class WhitePlayerController : MonoBehaviour
     public float jumpHeight = 500;
 
     public bool isInLightCollider = false;  //true of the player is currently within the collider for a light: does not mean they are currently in the light
-    public bool isInGreyLight = false;
+    public bool isInGreyLight = false;  //true if the player is within a collider marked as "GreyLight"
     public bool inTheLight = false;  //true if the player is currently in the light, false if not
     Transform currentLight;  //reference to the light that is currently a threat to the player
     public Text dialogue;  //Reference to the dialogue box above the player's head
     Vector3 lastInDark;  //Saves the last safe location before the player was in the light
 
-    public bool isHost;
-    public GameObject black;
+    public bool isHost;  //modified by SwitchCharacters script - true is this character is the one currently being controlled
+    public GameObject black;  //Object reference to the other character - used in BlackFollowWhite()
 
     bool isAlive;
     GameObject couldBeKilled;
@@ -56,6 +58,12 @@ public class WhitePlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Vector3 tempLocation; //allows the z of the location given by the current save to be modified before assignment
+
+        //get DoNotDestroy object which contains save information
+        currentSaveFile = GameObject.Find("SaveManager").GetComponent<SaveManager>().currentSave;
+
+        //set delay between animation frames
         delay = delayReset;
 
         //initialize the spawn position as the last place the character was in the dark
@@ -64,9 +72,16 @@ public class WhitePlayerController : MonoBehaviour
         //initialize White dialogue to empty
         dialogue.text = "";
 
+        //get if the player is alive
         isAlive = GetComponent<Life>().alive;
 
+        //initialize the character whom can be killed currently to White
         couldBeKilled = this.gameObject;
+
+        //sets the location of the player to the loaction in the save file + buffer so it's not on top of Black
+        tempLocation = currentSaveFile.currentLocation;
+        tempLocation.z = -1;
+        this.transform.position = tempLocation;
     }
 
     // Update is called once per frame
@@ -78,21 +93,21 @@ public class WhitePlayerController : MonoBehaviour
         //get input and move the player character
         if (isAlive)
         {
-            //if(isSinglePlayer)
-            //{
-            if (isHost)
+            if(currentSaveFile.isSingleplayer)
             {
-                WhiteMoveSingleplayer();
+                if (isHost)
+                {
+                    WhiteMoveSingleplayer();
+                }
+                else if (isInGreyLight)
+                {
+                    WhiteFollowBlack();
+                }
             }
-            else if (isInGreyLight)
+            else
             {
-                WhiteFollowBlack();
+                WhiteMoveMultiplayer();
             }
-            //}
-            //else
-            //{
-            //WhiteMoveMultiplayer();
-            //}
         }
 
         //if the player character is in the trigger for a light, check if they are in direct line-of-sight with the light
@@ -101,20 +116,12 @@ public class WhitePlayerController : MonoBehaviour
             CheckForLight();
         }
 
-        //If the player is in the light, move them back to outside of the collider
+        //If the player is in the light, move them back to outside of the collider/last known place they were safe
         if (inTheLight)
         {
-            //TODO: Check if lastInDark or other PC are closer, go to the closer one
-            //If you go to the other PC, match their position + an amount in tranform the opposite direction from the light
             transform.position = Vector3.Lerp(transform.position, lastInDark, (speed * 2));
             isWalking = true;
         }
-
-        /*if(Input.GetKeyDown(KeyCode.E))
-        {
-            couldBeKilled.GetComponent<Life>().alive = false;
-            print(couldBeKilled + " is dead");
-        }*/
     }
 
     public void Walk()

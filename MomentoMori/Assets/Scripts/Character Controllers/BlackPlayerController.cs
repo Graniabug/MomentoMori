@@ -18,6 +18,8 @@ public class BlackPlayerController : MonoBehaviour
 {
     public GameObject character;
 
+    private SaveFile currentSaveFile;
+
     /*
     public Sprite stand;
     public Sprite walk1;
@@ -57,6 +59,9 @@ public class BlackPlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Vector3 tempLocation;
+
+        currentSaveFile = GameObject.Find("SaveManager").GetComponent<SaveManager>().currentSave;
         delay = delayReset;
 
         //initialize the spawn position as the last place the character was in the light
@@ -68,6 +73,10 @@ public class BlackPlayerController : MonoBehaviour
         isAlive = GetComponent<Life>().alive;
 
         couldBeRevived = this.gameObject;
+
+        tempLocation = currentSaveFile.currentLocation;
+        tempLocation.z = 1;
+        this.transform.position = tempLocation;
     }
 
     // Update is called once per frame
@@ -75,24 +84,25 @@ public class BlackPlayerController : MonoBehaviour
     {
         //get if Black is alive
         isAlive = GetComponent<Life>().alive;
+
         //get input and move the player character
         if (isAlive)
         {
-            //if(isSinglePlayer)
-            //{
-            if (isHost)
+            if(currentSaveFile.isSingleplayer)
             {
-                BlackMoveSingleplayer();
+                if (isHost)
+                {
+                    BlackMoveSingleplayer();
+                }
+                else if (isInGreyLight && white.GetComponent<WhitePlayerController>().isInGreyLight)
+                {
+                    BlackFollowWhite();
+                }
             }
-            else if (isInGreyLight && white.GetComponent<WhitePlayerController>().isInGreyLight)
+            else
             {
-                BlackFollowWhite();
+            BlackMoveMultiplayer();
             }
-            //}
-            //else
-            //{
-            //BlackMoveMultiplayer();
-            //}
         }
 
         //if the player character is in the trigger for a light, check if they are in direct line-of-sight with the light

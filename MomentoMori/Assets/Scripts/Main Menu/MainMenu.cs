@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,6 +19,8 @@ public class MainMenu : MonoBehaviour
     public GameObject optionsMenu;
     public GameObject quitMenu;
     public Image fadeImage;
+
+    public SaveManager saveManager;
 
     Vector3 leftShift;
     Vector3 rightShift;
@@ -48,7 +51,7 @@ public class MainMenu : MonoBehaviour
 
         //show the easter egg menu art 1/50th of the time
         //otherwise, show the default art
-        int choose = Random.Range(1, 50);
+        int choose = UnityEngine.Random.Range(1, 50);
         if (choose == 50)
         {
             specialMenuArt.SetActive(true);
@@ -77,7 +80,6 @@ public class MainMenu : MonoBehaviour
             backGround.transform.position = Vector3.Lerp(backGround.transform.position, rightShift, lerpTime);
             if (Vector3.Distance(backGround.transform.position, rightShift).ToString("0.00") == "0.00")
             {
-                print("lerp done");
                 continuePressed = false;
             }
         }
@@ -88,7 +90,6 @@ public class MainMenu : MonoBehaviour
             backGround.transform.position = Vector3.Lerp(backGround.transform.position, leftShift, lerpTime);
             if (Vector3.Distance(backGround.transform.position, leftShift).ToString("0.00") == "0.00")
             {
-                print("lerp done");
                 newGamePressed = false;
             }
         }
@@ -100,7 +101,6 @@ public class MainMenu : MonoBehaviour
             backGround.transform.position = Vector3.Lerp(backGround.transform.position, BGOrigin, lerpTime);
             if (Vector3.Distance(backGround.transform.position, BGOrigin).ToString("0.00") == "0.00")
             {
-                print("lerp done");
                 resetBGPosition = false;
             }
         }
@@ -110,7 +110,6 @@ public class MainMenu : MonoBehaviour
             Color tempColor = fadeImage.color;
             tempColor.a = Mathf.Lerp(tempColor.a, 1.0f, 0.01f);
             fadeImage.color = tempColor;
-            print("opacity is: " + fadeImage.color.a);
             if (fadeImage.color.a.ToString("0.00") == "1.00")
             {
                 SceneManager.LoadScene("Area1");
@@ -186,9 +185,28 @@ public class MainMenu : MonoBehaviour
         multiplayerMenu.SetActive(true);
     }
 
-    public void Play()
+    public void SinglePlay()
     {
         fadeImage.gameObject.SetActive(true);
         fadeOut = true;
+
+        DateTime time = DateTime.Now;
+        saveManager.currentSave = new SaveFile(0, true, new Vector3(-19, 2, 0), time.ToString());
+        print("created new save");
+    }
+
+    public void MultiPlay()
+    {
+        fadeImage.gameObject.SetActive(true);
+        fadeOut = true;
+
+        DateTime time = DateTime.Now;
+        saveManager.currentSave = new SaveFile(0, false, new Vector3(-19, 2, 0), time.ToString());
+        print("created new save");
+    }
+
+    public void ContinuePlay()
+    {
+        SceneManager.LoadScene(saveManager.currentSave.currentLevel);
     }
 }
