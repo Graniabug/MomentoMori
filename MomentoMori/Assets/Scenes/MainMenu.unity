@@ -2923,6 +2923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9667ece49f0a7a4eb4dd0a05eff3cca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  continueButton: {fileID: 969567494}
   defaultMenuArt: {fileID: 750628107}
   specialMenuArt: {fileID: 224554340}
   backGround: {fileID: 721134311}
@@ -3037,7 +3038,7 @@ MonoBehaviour:
       type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: bca193e69f0c8ef4cb337560b80adddf, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted

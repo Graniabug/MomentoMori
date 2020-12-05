@@ -4,9 +4,11 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainMenu : MonoBehaviour
 {
+    public GameObject continueButton;
 
     public GameObject defaultMenuArt;
     public GameObject specialMenuArt;
@@ -48,6 +50,13 @@ public class MainMenu : MonoBehaviour
         optionsMenu.SetActive(false);
         quitMenu.SetActive(false);
         fadeImage.gameObject.SetActive(false);
+
+        string filepath = Application.persistentDataPath + "/Data/";
+        DirectoryInfo d = new DirectoryInfo(filepath);
+        if (d.GetFiles("*.txt").Length < 1)
+        {
+            continueButton.GetComponent<Button>().interactable = false;
+        }
 
         //show the easter egg menu art 1/50th of the time
         //otherwise, show the default art
