@@ -10,6 +10,8 @@ public class MainMenu : MonoBehaviour
 {
     public GameObject continueButton;
 
+    public AudioSource buttonSound;
+
     public GameObject defaultMenuArt;
     public GameObject specialMenuArt;
     public GameObject backGround;
@@ -129,6 +131,7 @@ public class MainMenu : MonoBehaviour
     public void Options()
     {
         optionsPressed = true;
+        buttonSound.Play();
     }
 
     public void Continue()
@@ -136,6 +139,7 @@ public class MainMenu : MonoBehaviour
         continuePressed = true;
         mainMenu.SetActive(false);
         continueMenu.SetActive(true);
+        buttonSound.Play();
     }
 
     public void NewGame()
@@ -143,11 +147,13 @@ public class MainMenu : MonoBehaviour
         newGamePressed = true;
         mainMenu.SetActive(false);
         newGameMenu.SetActive(true);
+        buttonSound.Play();
     }
     public void OpenQuitMenu()
     {
         mainMenu.SetActive(false);
         quitMenu.SetActive(true);
+        buttonSound.Play();
     }
 
     public void Quit()
@@ -162,6 +168,7 @@ public class MainMenu : MonoBehaviour
         multiplayerMenu.SetActive(false);
         newGameMenu.SetActive(false);
         mainMenu.SetActive(true);
+        buttonSound.Play();
     }
 
     public void BackFromContinue()
@@ -169,29 +176,34 @@ public class MainMenu : MonoBehaviour
         resetBGPosition = true;
         continueMenu.SetActive(false);
         mainMenu.SetActive(true);
+        buttonSound.Play();
     }
 
     public void BackFromOptions()
     {
 
+        buttonSound.Play();
     }
 
     public void BackFromQuit()
     {
         quitMenu.SetActive(false);
         mainMenu.SetActive(true);
+        buttonSound.Play();
     }
 
     public void SelectSinglePlayer()
     {
         multiplayerMenu.SetActive(false);
         singlePlayerMenu.SetActive(true);
+        buttonSound.Play();
     }
 
     public void SelectMultiplayer()
     {
         singlePlayerMenu.SetActive(false);
         multiplayerMenu.SetActive(true);
+        buttonSound.Play();
     }
 
     public void SinglePlay()
@@ -202,6 +214,7 @@ public class MainMenu : MonoBehaviour
         DateTime time = DateTime.Now;
         saveManager.currentSave = new SaveFile(0, true, new Vector3(-19, 2, 0), time.ToString());
         print("created new save");
+        buttonSound.Play();
     }
 
     public void MultiPlay()
@@ -212,10 +225,12 @@ public class MainMenu : MonoBehaviour
         DateTime time = DateTime.Now;
         saveManager.currentSave = new SaveFile(0, false, new Vector3(-19, 2, 0), time.ToString());
         print("created new save");
+        buttonSound.Play();
     }
 
     public void ContinuePlay()
     {
         SceneManager.LoadScene(saveManager.currentSave.currentLevel);
+        buttonSound.Play();
     }
 }
