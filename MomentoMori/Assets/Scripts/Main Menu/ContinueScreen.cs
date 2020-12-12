@@ -9,7 +9,6 @@ public class ContinueScreen : MonoBehaviour
     public GameObject[] buttons = new GameObject[2];
     public GameObject[] files = new GameObject[100];
     public GameObject saveFileTemplate;
-    public GameObject spawnLocation;
     public GameObject scrollMenu;
     public SaveFile temp;
     private Transform location;
@@ -18,7 +17,6 @@ public class ContinueScreen : MonoBehaviour
     void Start()
     {
         location = scrollMenu.transform;
-        vecLocation = spawnLocation.transform.position;
         location.position = vecLocation;
         int showIndex = 0;
 
@@ -35,11 +33,9 @@ public class ContinueScreen : MonoBehaviour
         DirectoryInfo d = new DirectoryInfo(filepath);
         for (int i = 0; i < d.GetFiles("*.txt").Length; i++)
         {
-            print("y location: " + vecLocation.y);
             files[i] = Instantiate(saveFileTemplate, location);
-            files[i].GetComponent<ContinueSelectableFile>().thisSave = temp;
-            vecLocation.y -= 125;
             temp = new SaveFile(filepath + d.GetFiles("*.txt")[i].Name);
+            files[i].GetComponent<ContinueSelectableFile>().thisSave = temp;
             showIndex = i + 1;
             files[i].transform.GetChild(0).GetComponent<Text>().text = showIndex.ToString();
             if (temp.isSingleplayer) {
