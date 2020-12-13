@@ -324,11 +324,8 @@ public class WhitePlayerController : MonoBehaviour
     {
         float distanceWanted = 3.0f;
 
-        if (!inTheLight)
-        {
-            Vector3 diff = transform.position - black.transform.position;
-            transform.position = black.transform.position + diff.normalized * distanceWanted;
-        }
+        Vector3 diff = transform.position - black.transform.position;
+        transform.position = black.transform.position + diff.normalized * distanceWanted;
     }
 
     void CheckForLight()
