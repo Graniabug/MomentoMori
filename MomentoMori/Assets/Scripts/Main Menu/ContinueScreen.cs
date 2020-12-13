@@ -10,12 +10,14 @@ public class ContinueScreen : MonoBehaviour
     public GameObject[] files = new GameObject[100];
     public GameObject saveFileTemplate;
     public GameObject scrollMenu;
+    public GameObject scrollParent;
     public SaveFile temp;
     private Transform location;
     private Vector3 vecLocation;
     // Start is called before the first frame update
     void Start()
     {
+        scrollParent.transform.position = new Vector3((Screen.width / 8)*3, scrollParent.transform.position.y, scrollParent.transform.position.z);
         location = scrollMenu.transform;
         location.position = vecLocation;
         int showIndex = 0;
@@ -33,7 +35,13 @@ public class ContinueScreen : MonoBehaviour
         DirectoryInfo d = new DirectoryInfo(filepath);
         for (int i = 0; i < d.GetFiles("*.txt").Length; i++)
         {
+            //create a new save UI slot and add it to the list
             files[i] = Instantiate(saveFileTemplate, location);
+            //add height of new save to total content height
+            scrollMenu.GetComponent<RectTransform>().sizeDelta = new Vector2(
+                scrollMenu.GetComponent<RectTransform>().sizeDelta.x, 
+                scrollMenu.GetComponent<RectTransform>().sizeDelta.y+110
+                );
             temp = new SaveFile(filepath + d.GetFiles("*.txt")[i].Name);
             files[i].GetComponent<ContinueSelectableFile>().thisSave = temp;
             showIndex = i + 1;
