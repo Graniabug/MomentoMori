@@ -232,7 +232,9 @@ public class MainMenu : MonoBehaviour
     public void ContinuePlay()
     {
         //SceneManager.LoadScene(saveManager.currentSave.currentLevel);
-        SceneManager.LoadScene("Loading");
+
+        fadeImage.gameObject.SetActive(true);
+        fadeOut = true;
         buttonSound.Play();
     }
 }
