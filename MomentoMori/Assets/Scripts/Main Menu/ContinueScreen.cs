@@ -17,7 +17,8 @@ public class ContinueScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        scrollParent.transform.position = new Vector3((Screen.width / 8)*3, scrollParent.transform.position.y, scrollParent.transform.position.z);
+        scrollParent.transform.position = new Vector3((Screen.width / 8) * 3, scrollParent.transform.position.y, scrollParent.transform.position.z);
+        scrollParent.GetComponent<RectTransform>().sizeDelta = new Vector2((Screen.width / 4) * 3, scrollParent.GetComponent<RectTransform>().sizeDelta.y);
         location = scrollMenu.transform;
         location.position = vecLocation;
         int showIndex = 0;
