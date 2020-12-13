@@ -18,10 +18,12 @@ public class SaveManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex != inScene)
+        //if (SceneManager.GetActiveScene().buildIndex != inScene)
+        if (SceneManager.GetActiveScene().name == "Loading")
         {
             currentSave.Save();
-            inScene = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(inScene + 1);
+            inScene = SceneManager.GetActiveScene().buildIndex + 1;
         }
     }
 }

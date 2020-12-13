@@ -123,7 +123,8 @@ public class MainMenu : MonoBehaviour
             fadeImage.color = tempColor;
             if (fadeImage.color.a.ToString("0.00") == "1.00")
             {
-                SceneManager.LoadScene("Area1");
+                //SceneManager.LoadScene("Area1");
+                SceneManager.LoadScene("Loading");
             }
         }
     }
@@ -230,7 +231,8 @@ public class MainMenu : MonoBehaviour
 
     public void ContinuePlay()
     {
-        SceneManager.LoadScene(saveManager.currentSave.currentLevel);
+        //SceneManager.LoadScene(saveManager.currentSave.currentLevel);
+        SceneManager.LoadScene("Loading");
         buttonSound.Play();
     }
 }
