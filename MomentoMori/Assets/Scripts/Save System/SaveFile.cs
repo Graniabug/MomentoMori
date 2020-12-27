@@ -13,6 +13,7 @@ public class SaveFile
     public bool isSingleplayer = true;
     public Vector3 currentLocation;
     public string time = "00/00/0000 00:00";
+    public bool[] foundRiddles = new bool[6];
     //string accountName = "DefaultName";
 
     public SaveFile(int level, bool singlePlayer, Vector3 location, string creationTime)
@@ -21,6 +22,10 @@ public class SaveFile
         isSingleplayer = singlePlayer;
         currentLocation = location;
         time = creationTime;
+        for (int i = 0; i < 6; i++)
+        {
+            foundRiddles[i] = false;
+        }
     }
 
     public SaveFile(string path)
@@ -58,23 +63,57 @@ public class SaveFile
         Debug.Log(fileName);
         filePath = Application.persistentDataPath + "/Data/" + fileName + ".txt";
 
-        File.WriteAllText(filePath, string.Empty);
-        currentLevel = SceneManager.GetActiveScene().buildIndex;
-
-        using (StreamWriter saveFile = new StreamWriter(filePath))
+        if (new FileInfo("file").Exists)
         {
-            saveFile.WriteLine(currentLevel);
-            //saveFile.Write("\n");
-            saveFile.WriteLine(isSingleplayer);
-            //saveFile.Write("\n");
-            saveFile.WriteLine(currentLocation.x);
-            //saveFile.Write("\n");
-            saveFile.WriteLine(currentLocation.y);
-            //saveFile.Write("\n");
-            saveFile.WriteLine(currentLocation.z);
-            //saveFile.Write("\n");
-            saveFile.WriteLine(time);
-            //saveFile.Write("\n");
+            File.WriteAllText(filePath, string.Empty);
+            currentLevel = SceneManager.GetActiveScene().buildIndex;
+
+            using (StreamWriter saveFile = new StreamWriter(filePath))
+            {
+                saveFile.WriteLine(currentLevel);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(isSingleplayer);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(currentLocation.x);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(currentLocation.y);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(currentLocation.z);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(time);
+                saveFile.Write(foundRiddles[0]);
+                for (int i = 1; i < 6; i++)
+                {
+                    saveFile.Write("," + foundRiddles[i]);
+                }
+                saveFile.Write("\n");
+            }
+        }
+        else
+        {
+            File.WriteAllText(filePath, string.Empty);
+            currentLevel = SceneManager.GetActiveScene().buildIndex;
+
+            using (StreamWriter saveFile = new StreamWriter(filePath))
+            {
+                saveFile.WriteLine(currentLevel);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(isSingleplayer);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(currentLocation.x);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(currentLocation.y);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(currentLocation.z);
+                //saveFile.Write("\n");
+                saveFile.WriteLine(time);
+                saveFile.Write("0");
+                for (int i = 1; i < 6; i++)
+                {
+                    saveFile.Write(",0");
+                }
+                saveFile.Write("\n");
+            }
         }
     }
 
@@ -84,8 +123,23 @@ public class SaveFile
         {
             currentLevel = int.Parse(saveFile.ReadLine());
             isSingleplayer = bool.Parse(saveFile.ReadLine());
-            //currentLocation = Vector3.Parse
+            currentLocation.x = int.Parse(saveFile.ReadLine());
+            currentLocation.y = int.Parse(saveFile.ReadLine());
+            currentLocation.z = int.Parse(saveFile.ReadLine());
             time = saveFile.ReadLine();
+            for (int i = 0; i < 6; i++)
+            {
+                if (saveFile.Read() == 0)
+                {
+                    foundRiddles[i] = false;
+                }
+                else
+                {
+                    foundRiddles[i] = true;
+                }
+                //get comma
+                saveFile.Read();
+            }
         }
     }
 

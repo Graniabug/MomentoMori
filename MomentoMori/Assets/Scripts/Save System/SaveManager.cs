@@ -23,7 +23,7 @@ public class SaveManager : MonoBehaviour
         {
             currentSave.Save();
             SceneManager.LoadScene(inScene + 1);
-            inScene = SceneManager.GetActiveScene().buildIndex + 1;
+            inScene++;
         }
     }
 }
