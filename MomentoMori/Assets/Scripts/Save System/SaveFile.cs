@@ -61,9 +61,9 @@ public class SaveFile
         fileName = fileName.Replace(' ', '_');
         fileName = fileName.Replace(':', '_');
         Debug.Log(fileName);
-        filePath = Application.persistentDataPath + "/Data/" + fileName + ".txt";
+        filePath = Application.persistentDataPath + /*"/Data/" + */fileName + ".txt";
 
-        if (new FileInfo("file").Exists)
+        if (new FileInfo(filePath).Exists)
         {
             File.WriteAllText(filePath, string.Empty);
             currentLevel = SceneManager.GetActiveScene().buildIndex;
