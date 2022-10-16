@@ -56,6 +56,8 @@ public class BlackPlayerController : MonoBehaviour
     bool isAlive;
     GameObject couldBeRevived;
 
+    public bool isInvisible = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -119,11 +121,16 @@ public class BlackPlayerController : MonoBehaviour
             isWalking = true;
         }
 
-/*        if(Input.GetKeyDown(KeyCode.E))
+        /*        if(Input.GetKeyDown(KeyCode.E))
+                {
+                    couldBeRevived.GetComponent<Life>().alive = true;
+                    print(couldBeRevived + " is alive");
+                }*/
+
+        if (isInvisible && !white.GetComponent<WhitePlayerController>().isInvisible)
         {
-            couldBeRevived.GetComponent<Life>().alive = true;
-            print(couldBeRevived + " is alive");
-        }*/
+            MessageActivation("Gale, hurry up!");
+        }
     }
 
     public void Walk()
@@ -360,10 +367,10 @@ public class BlackPlayerController : MonoBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider collision)
+    public void OnTriggerStay(Collider collision)
     {
         //if inside a light trigger
-        if (collision.gameObject.layer == 8)
+        if (collision.gameObject.tag == "Light"/*layer == 8*/)
         {
             isInLightCollider = true;
             currentLight = collision.gameObject.transform.parent;
@@ -385,7 +392,7 @@ public class BlackPlayerController : MonoBehaviour
 
     public void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == 8)
+        if (other.gameObject.tag == "Light"/*layer == 8*/)
         {
             isInLightCollider = false;
         }

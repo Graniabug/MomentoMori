@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Floor
   - GreyLight
+  - Light
   layers:
   - Default
   - TransparentFX

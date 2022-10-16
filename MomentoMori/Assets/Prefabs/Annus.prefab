@@ -109,6 +109,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6893605540521895000}
   - component: {fileID: 6893605540521895003}
+  - component: {fileID: 5970970147310642861}
   m_Layer: 0
   m_Name: New Sprite
   m_TagString: Untagged
@@ -180,6 +181,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5970970147310642861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6893605540521895001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1212668472674974a8a677e3fcd64675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 6893605541786657895}
 --- !u!1 &6893605541458266887
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,7 +320,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 6893605540521895001}
-  flashlight: {fileID: 0}
   characterName: White
   speed: 3
   delay: 0
@@ -317,10 +330,13 @@ MonoBehaviour:
   isJumping: 0
   jumpHeight: 500
   isInLightCollider: 0
+  isInGreyLight: 0
   inTheLight: 0
   dialogue: {fileID: 6893605541458266889}
   isHost: 0
   black: {fileID: 0}
+  canKill: 0
+  isInvisible: 0
 --- !u!54 &6893605541786657899
 Rigidbody:
   m_ObjectHideFlags: 0

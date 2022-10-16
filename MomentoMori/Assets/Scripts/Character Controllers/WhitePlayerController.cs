@@ -53,7 +53,10 @@ public class WhitePlayerController : MonoBehaviour
     public GameObject black;  //Object reference to the other character - used in BlackFollowWhite()
 
     bool isAlive;
+    public bool canKill;
     GameObject couldBeKilled;
+
+    public bool isInvisible = false;
 
     // Start is called before the first frame update
     void Start()
@@ -74,6 +77,7 @@ public class WhitePlayerController : MonoBehaviour
 
         //get if the player is alive
         isAlive = GetComponent<Life>().alive;
+        
 
         //initialize the character whom can be killed currently to White
         couldBeKilled = this.gameObject;
@@ -121,6 +125,11 @@ public class WhitePlayerController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, lastInDark, (speed * 2));
             isWalking = true;
+        }
+
+        if (isInvisible && !black.GetComponent<BlackPlayerController>().isInvisible)
+        {
+            MessageActivation("Kieran, come on!");
         }
     }
 
@@ -364,12 +373,12 @@ public class WhitePlayerController : MonoBehaviour
     public void OnTriggerEnter(Collider collision)
     {
         //if inside a light trigger
-        if (collision.gameObject.layer == 8)
+        if (collision.gameObject.tag == "Light"/*layer == 8*/)
         {
             isInLightCollider = true;
             lastInDark = transform.position;
             currentLight = collision.gameObject.transform.parent;
-            print("In the light collider");
+            print("Gale - In the light collider");
         }
 
         //if inside an enemy of player trigger that isn't your own
@@ -387,7 +396,7 @@ public class WhitePlayerController : MonoBehaviour
 
     public void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == 8)
+        if (other.gameObject.tag == "Light"/*layer == 8*/)
         {
             isInLightCollider = false;
         }

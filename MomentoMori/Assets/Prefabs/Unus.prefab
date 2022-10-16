@@ -186,6 +186,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3771055611731424336}
   - component: {fileID: 3771055611731424343}
+  - component: {fileID: 7615405936207242750}
   m_Layer: 0
   m_Name: New Sprite
   m_TagString: Untagged
@@ -257,6 +258,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7615405936207242750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3771055611731424342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1212668472674974a8a677e3fcd64675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 3771055612163749973}
 --- !u!1 &3771055612163749973
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,10 +330,12 @@ MonoBehaviour:
   isJumping: 0
   jumpHeight: 500
   isInLightCollider: 0
+  isInGreyLight: 0
   inTheLight: 0
   dialogue: {fileID: 3771055610887326539}
   isHost: 1
   white: {fileID: 0}
+  isInvisible: 0
 --- !u!114 &3771055612163749975
 MonoBehaviour:
   m_ObjectHideFlags: 0
