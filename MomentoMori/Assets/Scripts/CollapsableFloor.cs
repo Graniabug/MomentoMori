@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CollapsableFloor : MonoBehaviour
 {
+    public GameObject mainCamera;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,8 @@ public class CollapsableFloor : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            mainCamera.GetComponent<CameraMove>().followPlayerX = false;
+            mainCamera.GetComponent<CameraMove>().followPlayerXY = true;
             for (int i = 0; i < this.transform.childCount; i++)
             {
                 this.transform.GetChild(i).gameObject.GetComponent<Rigidbody>().useGravity = true;
