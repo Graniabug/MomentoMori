@@ -9,6 +9,9 @@ public class CameraMove : MonoBehaviour
     public GameObject Annus;
     public GameObject Unus;
 
+    public bool followPlayerX;
+    public bool followPlayerXY;
+
     Vector3 newLocation;
 
     // Start is called before the first frame update
